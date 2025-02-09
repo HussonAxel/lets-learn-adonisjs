@@ -68,7 +68,17 @@
 </head>
 
 <body class="min-h-screen w-screen font-sans">
-    <h1>A list of pokemons : </h1>
+    <nav>
+        <ul>
+            <li>
+                <a href="{{ route('home') }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ route('pokemons.show') }}">Pokemon</a>
+            </li>
+        </ul>
+    </nav>
+    <h1>My Pokemon </h1>
     {{ pokemon}}
 </body>
 
