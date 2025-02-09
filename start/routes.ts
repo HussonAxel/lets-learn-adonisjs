@@ -10,3 +10,6 @@
 import router from '@adonisjs/core/services/router'
 
 router.on('/').render('pages/home')
+router.get('/pokemons', async (ctx) => {
+  return 'My pokemons'
+})
