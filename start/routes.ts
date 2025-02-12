@@ -11,6 +11,9 @@ import router from '@adonisjs/core/services/router'
 import fs from 'node:fs/promises'
 import app from '@adonisjs/core/services/app'
 import { Exception } from '@adonisjs/core/exceptions'
+import {MarkdownFile} from '@dimerapp/markdown'
+import {toHtml} from '@dimerapp/markdown/utils'
+
 
 router.on('/').render('pages/home').as('home')
 router
@@ -23,11 +26,14 @@ router
 
 router
   .get('/pokemons/:slug', async (ctx) => {
-    let pokemon
-    const url = app.makeURL(`resources/pokemons/pokemon/${ctx.params.slug}.html`)
+    let file
+    const url = app.makeURL(`resources/pokemons/pokemon/${ctx.params.slug}.md`)
 
     try {
-      pokemon = await fs.readFile(url, 'utf-8')
+      file = await fs.readFile(url, 'utf-8')
+      const md = new MarkdownFile(file)
+      await md.process()
+      const pokemon = toHtml(md).contents
       ctx.view.share({ pokemon })
     } catch (error) {
       throw new Exception(`${ctx.params.slug} not found`, {
