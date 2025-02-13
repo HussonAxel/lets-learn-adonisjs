@@ -26,8 +26,15 @@ router
     for (const slug of slugs) {
       const filePath = app.makeURL(`${url.pathname}${slug.base}`)
       const fileContent = await fs.readFile(filePath, 'utf-8')
-      fileContents.push(fileContent)
-      console.log(fileContent)
+      const md = new MarkdownFile(fileContent)
+
+      await md.process()
+      fileContents.push({
+        pokemonName: md.frontmatter.pokemonName,
+        pokemonType: md.frontmatter.pokemonType,
+        pokemonNumber: md.frontmatter.pokemonNumber,
+        pokemonDescription: md.frontmatter.pokemonDescription,
+      })
     }
 
     return ctx.view.render('pages/home', { slugs: fileContents })
