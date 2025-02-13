@@ -75,7 +75,15 @@
         </li>
         <li>
           <a href="{{ route('pokemons.index')}}">Pokemons</a>
+
         </li>
+
+
+        @each(slug in slugs)
+        <li>
+          <a href="{{ route('pokemons.show', { slug: slug }) }}">{{ slug }}</a>
+        </li>
+        @endeach
       </ul>
     </nav>
   </body>

@@ -11,11 +11,29 @@ import router from '@adonisjs/core/services/router'
 import fs from 'node:fs/promises'
 import app from '@adonisjs/core/services/app'
 import { Exception } from '@adonisjs/core/exceptions'
-import {MarkdownFile} from '@dimerapp/markdown'
-import {toHtml} from '@dimerapp/markdown/utils'
+import { MarkdownFile } from '@dimerapp/markdown'
+import { toHtml } from '@dimerapp/markdown/utils'
+import path from 'node:path'
 
+router
+  .get('/', async (ctx) => {
+    const url = app.makeURL('resources/pokemons/pokemon/')
+    const files = await fs.readdir(url)
 
-router.on('/').render('pages/home').as('home')
+    const slugs = files.map((file) => path.parse(file))
+    const fileContents = []
+
+    for (const slug of slugs) {
+      const filePath = app.makeURL(`${url.pathname}${slug.base}`)
+      const fileContent = await fs.readFile(filePath, 'utf-8')
+      fileContents.push(fileContent)
+      console.log(fileContent)
+    }
+
+    return ctx.view.render('pages/home', { slugs: fileContents })
+  })
+  .as('home')
+
 router
   .get('/pokemons', async (ctx) => {
     const url = app.makeURL('resources/pokemons/index.html')
