@@ -73,13 +73,6 @@
         <li>
           <a class="text-3xl font-bold underline" href="{{ route('home') }}">Home</a>
         </li>
-        <li>
-          <a href="{{ route('pokemons.index')}}">Pokemons</a>
-
-        </li>
-
-
-        {{{slugs}}}
         @each(slug in slugs)
         <li> 
           <a href="{{ route('pokemons.show', { slug: slug.pokemonName }) }}">{{ slug.pokemonName }}</a>
