@@ -31,10 +31,9 @@ export default class PokemonsController {
       description: md.frontmatter.pokemonDescription,
     }
 
-    view.share({
+    return view.render('pages/pokemons/show', {
       pokemonHtml,
       pokemonData,
     })
-    return view.render('pages/pokemons/show')
   }
 }
