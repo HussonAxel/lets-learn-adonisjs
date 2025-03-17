@@ -58,8 +58,20 @@ router
       file = await fs.readFile(url, 'utf-8')
       const md = new MarkdownFile(file)
       await md.process()
-      const pokemon = toHtml(md).contents
-      ctx.view.share({ pokemon })
+
+      const pokemonHtml = toHtml(md).contents
+
+      const pokemonData = {
+        name: md.frontmatter.pokemonName,
+        type: md.frontmatter.pokemonType,
+        number: md.frontmatter.pokemonNumber,
+        description: md.frontmatter.pokemonDescription,
+      }
+
+      ctx.view.share({
+        pokemonHtml,
+        pokemonData,
+      })
     } catch (error) {
       throw new Exception(`${ctx.params.slug} not found`, {
         code: 'E_NOT_FOUND',

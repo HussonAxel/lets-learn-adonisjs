@@ -77,8 +77,20 @@
 
         </ul>
     </nav>
-    {{{ pokemon }}}
 
+      <div class="pokemon-details">
+        <h1>{{ pokemonData.name }}</h1>
+        
+        <div class="pokemon-info">
+          <p><strong>Type:</strong> {{ pokemonData.type }}</p>
+          <p><strong>Number:</strong> {{ pokemonData.number }}</p>
+          <p><strong>Description:</strong> {{ pokemonData.description }}</p>
+        </div>
+        
+        <div class="pokemon-content">
+          {{{ pokemonHtml }}}
+        </div>
+      </div>
 </body>
 
 </html>

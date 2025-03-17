@@ -79,9 +79,10 @@
         </li>
 
 
+        {{{slugs}}}
         @each(slug in slugs)
         <li> 
-          <a href="{{ route('pokemons.show', { slug: slug }) }}">{{ slug.pokemonName }}</a>
+          <a href="{{ route('pokemons.show', { slug: slug.pokemonName }) }}">{{ slug.pokemonName }}</a>
           <p>{{slug.pokemonDescription}}</p>
         </li>
         @end
