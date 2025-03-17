@@ -10,25 +10,16 @@
 import router from '@adonisjs/core/services/router'
 import fs from 'node:fs/promises'
 import app from '@adonisjs/core/services/app'
-import { Exception } from '@adonisjs/core/exceptions'
-import { MarkdownFile } from '@dimerapp/markdown'
 import { toHtml } from '@dimerapp/markdown/utils'
-import path from 'node:path'
+import PokemonService from '#services/pokemon_service'
 
 router
   .get('/', async (ctx) => {
-    const url = app.makeURL('resources/pokemons/pokemon/')
-    const files = await fs.readdir(url)
-
-    const slugs = files.map((file) => path.parse(file))
+    const slugs = await PokemonService.getSlugs()
     const fileContents = []
 
     for (const slug of slugs) {
-      const filePath = app.makeURL(`${url.pathname}${slug.base}`)
-      const fileContent = await fs.readFile(filePath, 'utf-8')
-      const md = new MarkdownFile(fileContent)
-
-      await md.process()
+      const md = await PokemonService.read(slug)
       fileContents.push({
         pokemonName: md.frontmatter.pokemonName,
         pokemonType: md.frontmatter.pokemonType,
@@ -51,33 +42,20 @@ router
 
 router
   .get('/pokemons/:slug', async (ctx) => {
-    let file
-    const url = app.makeURL(`resources/pokemons/pokemon/${ctx.params.slug}.md`)
+    const md = await PokemonService.read(ctx.params.slug)
+    const pokemonHtml = toHtml(md).contents
 
-    try {
-      file = await fs.readFile(url, 'utf-8')
-      const md = new MarkdownFile(file)
-      await md.process()
-
-      const pokemonHtml = toHtml(md).contents
-
-      const pokemonData = {
-        name: md.frontmatter.pokemonName,
-        type: md.frontmatter.pokemonType,
-        number: md.frontmatter.pokemonNumber,
-        description: md.frontmatter.pokemonDescription,
-      }
-
-      ctx.view.share({
-        pokemonHtml,
-        pokemonData,
-      })
-    } catch (error) {
-      throw new Exception(`${ctx.params.slug} not found`, {
-        code: 'E_NOT_FOUND',
-        status: 404,
-      })
+    const pokemonData = {
+      name: md.frontmatter.pokemonName,
+      type: md.frontmatter.pokemonType,
+      number: md.frontmatter.pokemonNumber,
+      description: md.frontmatter.pokemonDescription,
     }
+
+    ctx.view.share({
+      pokemonHtml,
+      pokemonData,
+    })
     return ctx.view.render('pages/pokemons/show')
   })
   .as('pokemons.show')

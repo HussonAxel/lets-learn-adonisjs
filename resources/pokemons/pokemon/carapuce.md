@@ -1,5 +1,5 @@
 ---
-pokemonName: Carapuce
+pokemonName: carapuce
 pokemonType: Eau
 pokemonNumber: 007
 pokemonImage: https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png
